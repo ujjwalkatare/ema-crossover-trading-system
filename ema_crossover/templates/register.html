@@ -1,0 +1,178 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card shadow-sm">
+        <div class="card-header bg-white text-center">
+          <h4 class="mb-0">Create Your Account</h4>
+        </div>
+        <div class="card-body p-4">
+          <div id="message"></div>
+
+          <!-- Registration Form -->
+          <form id="registerForm">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="first_name" class="form-label">First Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="first_name"
+                  required
+                />
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="last_name" class="form-label">Last Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="last_name"
+                  required
+                />
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">Email address</label>
+              <input type="email" class="form-control" name="email" required />
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input
+                type="password"
+                class="form-control"
+                name="password"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="confirm_password" class="form-label"
+                >Confirm Password</label
+              >
+              <input
+                type="password"
+                class="form-control"
+                name="confirm_password"
+                required
+              />
+            </div>
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary">Register</button>
+            </div>
+          </form>
+
+          <!-- OTP Verification Form -->
+          <form id="verifyRegisterForm" class="d-none mt-3">
+            <input type="hidden" name="email" id="otpEmail" />
+            <div class="mb-3">
+              <label for="otp" class="form-label">Enter OTP</label>
+              <input
+                type="text"
+                class="form-control"
+                name="otp"
+                placeholder="Enter OTP sent to your email"
+                required
+              />
+            </div>
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary">Verify OTP</button>
+            </div>
+          </form>
+
+          <p class="text-center mt-3">
+            Already have an account? <a href="{% url 'login' %}">Login here</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block scripts %}
+<script>
+  // Show loading spinner
+  function showLoading(message = "Sending OTP...") {
+    $("#message").html(`
+      <div class="alert alert-info d-flex align-items-center" role="alert">
+        <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+        <div>${message}</div>
+      </div>
+    `);
+  }
+
+  // Hide loading
+  function hideLoading() {
+    $("#message").html("");
+  }
+
+  // Registration form submit
+  $("#registerForm").on("submit", function (e) {
+    e.preventDefault();
+    const formData = $(this).serialize();
+
+    // Show spinner
+    showLoading("Sending OTP...");
+
+    $.ajax({
+      url: "{% url 'register' %}",
+      type: "POST",
+      data: formData,
+      success: function (res) {
+        hideLoading();
+        if (res.status === "otp_sent") {
+          $("#message").html(
+            '<div class="alert alert-primary">' + res.message + "</div>"
+          );
+          $("#otpEmail").val(res.email);
+          $("#registerForm").addClass("d-none");
+          $("#verifyRegisterForm").removeClass("d-none");
+          $("#verifyRegisterForm input[name=otp]").focus();
+        } else {
+          $("#message").html(
+            '<div class="alert alert-danger">' +
+              (res.message || JSON.stringify(res.errors)) +
+              "</div>"
+          );
+        }
+      },
+      error: function () {
+        hideLoading();
+        $("#message").html(
+          '<div class="alert alert-danger">Something went wrong. Please try again.</div>'
+        );
+      },
+    });
+  });
+
+  // OTP verification
+  $("#verifyRegisterForm").on("submit", function (e) {
+    e.preventDefault();
+    showLoading("Verifying OTP...");
+
+    $.ajax({
+      url: "{% url 'verify_registration_otp' %}",
+      type: "POST",
+      data: $(this).serialize(),
+      success: function (res) {
+        hideLoading();
+        if (res.status === "success") {
+          $("#message").html(
+            '<div class="alert alert-primary">' +
+              res.message +
+              " You can now login.</div>"
+          );
+          $("#verifyRegisterForm").addClass("d-none");
+        } else {
+          $("#message").html(
+            '<div class="alert alert-danger">' + res.message + "</div>"
+          );
+        }
+      },
+      error: function () {
+        hideLoading();
+        $("#message").html(
+          '<div class="alert alert-danger">Something went wrong. Please try again.</div>'
+        );
+      },
+    });
+  });
+</script>
+{% endblock %}

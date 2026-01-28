@@ -1,0 +1,182 @@
+/* Stocks Analysis Specific Styles */
+.search-box .input-group-text {
+  border-radius: 0.5rem 0 0 0.5rem;
+}
+
+.search-box .form-control {
+  border-radius: 0 0.5rem 0.5rem 0;
+}
+
+/* Stock Card Styles */
+.stock-card {
+  background: #fff;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  height: 100%;
+  cursor: pointer;
+}
+
+.stock-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.stock-header {
+  display: flex;
+  justify-content: between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.stock-symbol {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 0;
+}
+
+.stock-name {
+  color: #6c757d;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.stock-price {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.stock-change {
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.stock-change.positive {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.stock-change.negative {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.ema-indicators {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+
+.ema-indicator {
+  text-align: center;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  background: #f8f9fa;
+}
+
+.ema-label {
+  font-size: 0.75rem;
+  color: #6c757d;
+  margin-bottom: 0.25rem;
+}
+
+.ema-value {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.signal-badge {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.signal-bullish {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.signal-bearish {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.signal-neutral {
+  background-color: #e0f2fe;
+  color: #075985;
+}
+
+.stock-chart-mini {
+  height: 80px;
+  margin: 1rem 0;
+  border-radius: 0.5rem;
+  background: #f8f9fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6c757d;
+  font-size: 0.8rem;
+}
+
+/* Filter Styles */
+.filter-section {
+  background: #fff;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .stock-card {
+    padding: 1rem;
+  }
+
+  .stock-price {
+    font-size: 1.5rem;
+  }
+
+  .ema-indicators {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+}
+
+/* Chart Modal Styles */
+.modal-chart-container {
+  height: 400px;
+  position: relative;
+}
+
+.chart-legend {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+}
+
+.legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+}

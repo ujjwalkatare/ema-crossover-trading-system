@@ -1,0 +1,154 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-5">
+      <div class="card shadow-sm">
+        <div class="card-header bg-white text-center">
+          <h4 class="mb-0">Login to Your Account</h4>
+        </div>
+        <div class="card-body p-4">
+          <div id="loginMessage"></div>
+
+          <form id="loginForm">
+            <div class="mb-3">
+              <label for="email" class="form-label">Email address</label>
+              <input type="email" class="form-control" name="email" required />
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input
+                type="password"
+                class="form-control"
+                name="password"
+                required
+              />
+            </div>
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary">Login</button>
+            </div>
+          </form>
+
+          <form id="verifyLoginForm" class="d-none">
+            <input type="hidden" name="email" id="loginOtpEmail" />
+            <input
+              type="password"
+              name="password"
+              id="loginOtpPassword"
+              class="d-none"
+            />
+            <div class="mb-3">
+              <label for="otp" class="form-label">Enter OTP</label>
+              <input
+                type="text"
+                class="form-control"
+                name="otp"
+                placeholder="Enter OTP sent to your email"
+                required
+              />
+            </div>
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary">Verify OTP</button>
+            </div>
+          </form>
+
+          <p class="text-center mt-3">
+            Don't have an account?
+            <a href="{% url 'register' %}">Register here</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block scripts %}
+<script>
+  // Show loading spinner
+  function showLoading(message = "Sending OTP...") {
+    $("#loginMessage").html(`
+    <div class="alert alert-info d-flex align-items-center" role="alert">
+      <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+      <div>${message}</div>
+    </div>
+  `);
+  }
+
+  // Hide loading
+  function hideLoading() {
+    $("#loginMessage").html("");
+  }
+
+  // Login form submit
+  $("#loginForm").on("submit", function (e) {
+    e.preventDefault();
+    const formData = $(this).serialize();
+    const password = $("input[name=password]").val();
+
+    showLoading("Sending OTP..."); // NEW: show spinner
+
+    $.ajax({
+      url: "{% url 'login' %}",
+      type: "POST",
+      data: formData,
+      success: function (res) {
+        hideLoading(); // NEW: hide spinner
+        if (res.status === "otp_sent") {
+          $("#loginMessage").html(
+            '<div class="alert alert-primary">' + res.message + "</div>"
+          );
+          $("#loginOtpEmail").val(res.email);
+          $("#loginOtpPassword").val(password); // keep password hidden
+          $("#loginForm").addClass("d-none");
+          $("#verifyLoginForm").removeClass("d-none");
+          $("#verifyLoginForm input[name=otp]").focus();
+        } else {
+          $("#loginMessage").html(
+            '<div class="alert alert-danger">' +
+              (res.message || JSON.stringify(res.errors)) +
+              "</div>"
+          );
+        }
+      },
+      error: function () {
+        hideLoading();
+        $("#loginMessage").html(
+          '<div class="alert alert-danger">Something went wrong. Please try again.</div>'
+        );
+      },
+    });
+  });
+
+  // OTP verification
+  $("#verifyLoginForm").on("submit", function (e) {
+    e.preventDefault();
+    showLoading("Verifying OTP..."); // NEW: spinner
+
+    $.ajax({
+      url: "{% url 'verify_login_otp' %}",
+      type: "POST",
+      data: $(this).serialize(),
+      success: function (res) {
+        hideLoading(); // NEW: hide spinner
+        if (res.status === "success") {
+          $("#loginMessage").html(
+            '<div class="alert alert-primary">' + res.message + "</div>"
+          );
+          $("#verifyLoginForm").addClass("d-none");
+          setTimeout(() => {
+            window.location.href = "{% url 'home' %}";
+          }, 1500);
+        } else {
+          $("#loginMessage").html(
+            '<div class="alert alert-danger">' + res.message + "</div>"
+          );
+        }
+      },
+      error: function () {
+        hideLoading();
+        $("#loginMessage").html(
+          '<div class="alert alert-danger">Something went wrong. Please try again.</div>'
+        );
+      },
+    });
+  });
+</script>
+{% endblock %}

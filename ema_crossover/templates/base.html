@@ -1,0 +1,198 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>EMA Crossover</title>
+
+    <link rel="icon" href="{% static 'img/favicon.png' %}" />
+
+    <link
+      rel="stylesheet"
+      href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}"
+    />
+
+    <link rel="stylesheet" href="{% static 'css/main.css' %}" />
+
+    <style>
+      /* Mobile-specific enhancements */
+      @media (max-width: 576px) {
+        .navbar-brand {
+          font-size: 1rem;
+        }
+
+        .container-fluid {
+          padding-left: 10px;
+          padding-right: 10px;
+        }
+
+        /* Adjust main content padding for mobile */
+        main {
+          padding-left: 1rem;
+          padding-right: 1rem;
+        }
+
+        /* Improve card spacing on mobile */
+        .card {
+          margin-bottom: 1rem;
+        }
+
+        /* Make buttons more touch-friendly */
+        .btn {
+          padding: 12px 16px;
+          font-size: 1rem;
+        }
+
+        /* Adjust stat cards for mobile */
+        .stat-card .icon {
+          font-size: 1.25rem;
+          padding: 0.5rem;
+        }
+
+        .value {
+          font-size: 1.75rem;
+        }
+      }
+
+      /* Ensure content is properly spaced on all devices */
+      .main-content {
+        min-height: calc(100vh - 120px);
+        padding: 20px 0;
+      }
+
+      /* Form improvements for mobile */
+      .auth-form {
+        max-width: 400px;
+        margin: 0 auto;
+      }
+
+      .auth-form .form-control {
+        padding: 12px 15px;
+      }
+
+      /* Mobile-first responsive utilities */
+      .mobile-hidden {
+        display: none;
+      }
+
+      @media (min-width: 768px) {
+        .mobile-hidden {
+          display: inline-block;
+        }
+      }
+
+      /* Footer styling */
+      footer {
+        margin-top: auto;
+      }
+    </style>
+  </head>
+
+  <body class="bg-light d-flex flex-column min-vh-100">
+    <!-- base.html -->
+    <header>
+      <nav
+        class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm"
+      >
+        <div class="container-fluid mx-lg-3">
+          <!-- Brand -->
+          <a
+            class="navbar-brand d-flex align-items-center"
+            href="{% url 'home' %}"
+          >
+            <img
+              src="{% static 'img/favicon.webp' %}"
+              alt="Logo"
+              width="30"
+              height="30"
+              class="me-2"
+            />
+            <span class="fw-bold">EMA Crossover</span>
+            <small class="text-muted ms-2">Auth</small>
+          </a>
+        </div>
+      </nav>
+    </header>
+
+    <main class="main-content flex-grow-1">
+      {% block content %}
+      <!-- Default content if none provided -->
+      <div class="container mt-4">
+        <div class="row justify-content-center">
+          <div class="col-12 col-md-8 col-lg-6">
+            <div class="card shadow-sm stat-card">
+              <div class="card-body p-4 text-center">
+                <div class="icon-circle bg-primary text-white mx-auto mb-3">
+                  <i class="bi bi-graph-up"></i>
+                </div>
+                <h2 class="card-title mb-3">Welcome to EMA Crossover</h2>
+                <p class="text-muted">
+                  Please log in or register to access the dashboard and trading
+                  tools.
+                </p>
+                <div
+                  class="d-grid gap-2 d-md-flex justify-content-md-center mt-4"
+                >
+                  <a href="{% url 'login' %}" class="btn btn-primary me-md-2">
+                    <i class="bi bi-box-arrow-in-right me-1"></i>Login
+                  </a>
+                  <a
+                    href="{% url 'register' %}"
+                    class="btn btn-outline-primary"
+                  >
+                    <i class="bi bi-person-plus-fill me-1"></i>Register
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Stats preview for homepage -->
+            <div class="row mt-4">
+              <div class="col-6">
+                <div class="card stat-card">
+                  <div class="card-body text-center">
+                    <div class="icon bg-primary text-white mx-auto mb-2">
+                      <i class="bi bi-arrow-up-right"></i>
+                    </div>
+                    <div class="value">24</div>
+                    <div class="card-title">Signals Today</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="card stat-card">
+                  <div class="card-body text-center">
+                    <div class="icon bg-success text-white mx-auto mb-2">
+                      <i class="bi bi-check-circle"></i>
+                    </div>
+                    <div class="value">89%</div>
+                    <div class="card-title">Accuracy</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endblock %}
+    </main>
+
+    <footer class="bg-white border-top py-3 mt-4">
+      <div class="container text-center">
+        <small class="text-muted"
+          >© {% now "Y" %} EMA Crossover. All rights reserved.</small
+        >
+      </div>
+    </footer>
+
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    {% block scripts %} {% endblock %}
+  </body>
+</html>

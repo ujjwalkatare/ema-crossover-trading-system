@@ -1,0 +1,147 @@
+/*--------------------------------------------------------------
+# Font & Color Variables
+--------------------------------------------------------------*/
+:root {
+  --default-font: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --heading-font: "Raleway", sans-serif;
+
+  /* Bootstrap Colors (for reference, they are built-in) */
+  --bs-blue: #0d6efd;
+  --bs-red: #dc3545;
+  --bs-yellow: #ffc107;
+  --bs-green: #198754;
+  --bs-light: #f8f9fa;
+  --bs-dark: #212529;
+  --bs-primary: #0d6efd;
+  --bs-primary-bg-subtle: #cfe2ff;
+}
+
+/*--------------------------------------------------------------
+# General Styling
+--------------------------------------------------------------*/
+body {
+  font-family: var(--default-font);
+  color: #212529;
+  background-color: #f8f9fa; /* Bootstrap light gray */
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--heading-font);
+  font-weight: 600;
+}
+
+.value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #343a40;
+}
+
+/*--------------------------------------------------------------
+# Header (Navbar)
+--------------------------------------------------------------*/
+.navbar-brand {
+  font-family: var(--heading-font);
+}
+
+.navbar .nav-link {
+  color: #6c757d;
+  transition: color 0.3s ease;
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link.active {
+  color: var(--bs-primary);
+}
+
+/*--------------------------------------------------------------
+# Main Content
+--------------------------------------------------------------*/
+main {
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+/*--------------------------------------------------------------
+# Stat Cards
+--------------------------------------------------------------*/
+.stat-card {
+  border: none;
+  border-radius: 0.75rem;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.stat-card .icon {
+  font-size: 1.5rem;
+  padding: 0.75rem;
+  background-color: var(--bs-primary-bg-subtle);
+  color: var(--bs-primary);
+  border-radius: 50%;
+}
+
+.stat-card .card-title {
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/*--------------------------------------------------------------
+# Quick Actions & Recent Activity
+--------------------------------------------------------------*/
+.card-header {
+  border-bottom: 1px solid #dee2e6;
+  padding: 1rem 1.25rem;
+}
+
+.list-group-item.active {
+  background-color: var(--bs-primary);
+  border-color: var(--bs-primary);
+}
+
+.list-group-item-action:hover,
+.list-group-item-action:focus {
+  background-color: #f8f9fa;
+}
+
+.icon-circle {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+  font-size: 1.25rem;
+}
+
+#sidebarMenu .nav-link {
+  color: #333;
+  font-weight: 500;
+}
+#sidebarMenu .nav-link.active,
+#sidebarMenu .nav-link:hover {
+  background-color: #0d6efd;
+  color: #fff;
+  border-radius: 5px;
+}
+.icon-circle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+

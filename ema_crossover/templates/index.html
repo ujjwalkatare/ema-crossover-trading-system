@@ -1,0 +1,358 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EMA Crossover - Technical Analysis Software</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css"
+    />
+    <style>
+      :root {
+        --primary-color: #0d6efd;
+        --secondary-color: #6c757d;
+        --accent-color: #198754;
+        --dark-color: #212529;
+        --light-color: #f8f9fa;
+      }
+
+      body {
+        font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+        background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+          url("{% static 'img/bg_03_image.jpg' %}") no-repeat center center
+            fixed;
+        background-size: cover;
+        color: white;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .navbar {
+        background-color: rgba(13, 110, 253, 0.9) !important;
+        backdrop-filter: blur(10px);
+      }
+
+      .hero-section {
+        padding: 100px 0;
+        text-align: center;
+      }
+
+      .hero-title {
+        font-size: 3.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      }
+
+      .hero-subtitle {
+        font-size: 1.5rem;
+        margin-bottom: 2rem;
+        opacity: 0.9;
+      }
+
+      .features-section {
+        padding: 80px 0;
+        background-color: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+      }
+
+      .feature-card {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 30px;
+        margin-bottom: 30px;
+        height: 100%;
+        transition: transform 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .feature-card:hover {
+        transform: translateY(-5px);
+        background-color: rgba(255, 255, 255, 0.15);
+      }
+
+      .feature-icon {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        color: var(--primary-color);
+      }
+
+      .demo-section {
+        padding: 80px 0;
+        text-align: center;
+      }
+
+      .btn-primary {
+        background-color: var(--primary-color);
+        border: none;
+        padding: 12px 30px;
+        font-size: 1.1rem;
+        border-radius: 30px;
+        transition: all 0.3s ease;
+      }
+
+      .btn-primary:hover {
+        background-color: #0b5ed7;
+        transform: scale(1.05);
+      }
+
+      .btn-outline-light {
+        border: 2px solid white;
+        color: white;
+        padding: 12px 30px;
+        font-size: 1.1rem;
+        border-radius: 30px;
+        transition: all 0.3s ease;
+      }
+
+      .btn-outline-light:hover {
+        background-color: white;
+        color: var(--dark-color);
+      }
+
+      .footer {
+        background-color: rgba(0, 0, 0, 0.8);
+        padding: 30px 0;
+        margin-top: auto;
+      }
+
+      .certification-badge {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 5px;
+        padding: 10px 15px;
+        display: inline-block;
+        margin: 5px;
+        font-size: 0.9rem;
+      }
+
+      @media (max-width: 768px) {
+        .hero-title {
+          font-size: 2.5rem;
+        }
+
+        .hero-subtitle {
+          font-size: 1.2rem;
+        }
+
+        .feature-card {
+          margin-bottom: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+      <div class="container">
+        <a class="navbar-brand d-flex align-items-center" href="#">
+          <i class="bi bi-graph-up-arrow me-2"></i>
+          <span class="fw-bold">EMA Crossover</span>
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="#">
+                <i class="bi bi-house-door me-1"></i>
+                <span class="mobile-hidden">Home</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'login' %}">
+                <i class="bi bi-box-arrow-in-right me-1"></i>
+                <span class="mobile-hidden">Login</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'register' %}">
+                <i class="bi bi-person-plus-fill me-1"></i>
+                <span class="mobile-hidden">Register</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="container">
+        <h1 class="hero-title">
+          Best Technical Analysis Software for Indian Stock Market
+        </h1>
+        <p class="hero-subtitle">
+          Highly accurate Automatic Buy, Sell Target & Stop Loss Trading Signals
+        </p>
+        <div class="mt-4">
+          <a href="{% url 'login' %}" class="btn btn-primary me-3">Start EMA</a>
+          <a href="#features" class="btn btn-outline-light">Learn More</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features-section">
+      <div class="container">
+        <div class="row text-center mb-5">
+          <div class="col-12">
+            <h2 class="display-4 mb-3">Our Trading Solutions</h2>
+            <p class="lead">Comprehensive tools for all your trading needs</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="feature-card">
+              <div class="feature-icon">
+                <i class="bi bi-bar-chart-line"></i>
+              </div>
+              <h3>BSE Stocks & Sensex</h3>
+              <p>
+                Advanced technical analysis for BSE stocks and Sensex with
+                real-time signals and alerts.
+              </p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="feature-card">
+              <div class="feature-icon">
+                <i class="bi bi-graph-up"></i>
+              </div>
+              <h3>Nifty & BankNifty Options</h3>
+              <p>
+                Precise trading signals for Nifty and BankNifty options with
+                target and stop loss levels.
+              </p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="feature-card">
+              <div class="feature-icon">
+                <i class="bi bi-currency-exchange"></i>
+              </div>
+              <h3>Commodity Trading</h3>
+              <p>
+                Expert analysis for commodity markets with intraday, swing, and
+                positional trading signals.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-4">
+          <div class="col-md-6">
+            <div class="feature-card">
+              <div class="feature-icon">
+                <i class="bi bi-lightning-charge"></i>
+              </div>
+              <h3>Intraday Trading</h3>
+              <p>
+                High-frequency signals for intraday traders with precise entry
+                and exit points.
+              </p>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="feature-card">
+              <div class="feature-icon">
+                <i class="bi bi-calendar-week"></i>
+              </div>
+              <h3>Swing & Positional Trading</h3>
+              <p>
+                Strategic signals for swing and positional traders with higher
+                time frame analysis.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Demo Section -->
+    <section id="demo" class="demo-section">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-8">
+            <h2 class="display-4 mb-4">See Our Software in Action</h2>
+            <p class="lead mb-5">
+              Request a free demo to see how our EMA Crossover software can
+              transform your trading strategy with accurate signals and
+              comprehensive analysis.
+            </p>
+
+            <div class="row mb-5">
+              <div class="col-md-6 mb-4">
+                <div class="certification-badge">
+                  <i class="bi bi-patch-check me-2"></i> GST No.:
+                  19ABSFAB856FIZR
+                </div>
+              </div>
+              <div class="col-md-6 mb-4">
+                <div class="certification-badge">
+                  <i class="bi bi-award me-2"></i> NISM Reg No.: 202300144643
+                </div>
+              </div>
+            </div>
+
+            <a href="#" class="btn btn-primary btn-lg">Request a Demo</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6">
+            <h5>EMA Crossover</h5>
+            <p>
+              Professional technical analysis software for the Indian stock
+              market.
+            </p>
+          </div>
+          <div class="col-md-3">
+            <h5>Quick Links</h5>
+            <ul class="list-unstyled">
+              <li><a href="#" class="text-light">Home</a></li>
+              <li><a href="#features" class="text-light">Features</a></li>
+              <li><a href="#demo" class="text-light">Demo</a></li>
+              <li><a href="#" class="text-light">Contact</a></li>
+            </ul>
+          </div>
+          <div class="col-md-3">
+            <h5>Contact Us</h5>
+            <ul class="list-unstyled">
+              <li><i class="bi bi-envelope me-2"></i> info@emacrossover.com</li>
+              <li><i class="bi bi-telephone me-2"></i> +91 98765 43210</li>
+              <li><i class="bi bi-geo-alt me-2"></i> Mumbai, India</li>
+            </ul>
+          </div>
+        </div>
+        <hr class="mt-4 mb-4" />
+        <div class="row">
+          <div class="col-md-6">
+            <p class="mb-0">&copy; 2025 EMA Crossover. All rights reserved.</p>
+          </div>
+          <div class="col-md-6 text-md-end">
+            <p class="mb-0">Designed for Indian Traders</p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

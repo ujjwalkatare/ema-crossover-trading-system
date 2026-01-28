@@ -1,0 +1,533 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>EMA Crossover - Professional Dashboard</title>
+    <link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}" />
+  </head>
+  <body>
+    <!-- Full Page Loader - CENTERED DESIGN -->
+    <!-- SIMPLE CENTER LOADER -->
+<div id="fullPageLoader" class="prediction-loader d-none">
+  <div class="prediction-loader-content">
+    <div class="spinner"></div>
+
+    <p class="loader-title">Please wait.</p>
+    <p class="loader-text">
+      We’re checking your stock data.<br />
+      It’ll just take a moment.
+    </p>
+  </div>
+</div>
+
+
+    <nav class="navbar navbar-light bg-white border-bottom shadow-sm d-lg-none fixed-top">
+      <div class="container-fluid">
+        <button class="btn btn-outline-primary sidebar-toggle" type="button"><i class="bi bi-list fs-3"></i></button>
+        <span class="navbar-brand fw-bold">EMA Crossover</span>
+      </div>
+    </nav>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-lg-2 d-lg-block bg-light border-end sidebar" id="sidebar">
+          <div class="sidebar-content d-flex flex-column p-3">
+            <div class="sidebar-header">
+              <a href="#" class="d-flex align-items-center mb-4 text-decoration-none">
+                <img src="{% static 'img/favicon.webp' %}" alt="Logo" class="sidebar-logo me-2" />
+                <span class="sidebar-brand">EMA Crossover</span>
+              </a>
+            </div>
+            <hr class="sidebar-divider" />
+            <ul class="nav nav-pills flex-column mb-auto sidebar-nav">
+              <li class="nav-item"><a href="#home" class="nav-link active" data-section="home"><i class="bi bi-house-door me-2"></i><span class="nav-text">Dashboard</span></a></li>
+              <li class="nav-item"><a href="#stocks" class="nav-link" data-section="stocks"><i class="bi bi-bar-chart-line me-2"></i><span class="nav-text">Stocks Analysis</span></a></li>
+              <!-- <li class="nav-item"><a href="#signals" class="nav-link" data-section="signals"><i class="bi bi-graph-up-arrow me-2"></i><span class="nav-text">Trading Signals</span></a></li> -->
+                <li class="nav-item">
+    <a href="#prediction" class="nav-link" data-section="prediction">
+      <i class="bi bi-cpu me-2"></i>
+      <span class="nav-text">Future Prediction</span>
+    </a>
+  </li>
+            </ul>
+            <hr class="sidebar-divider" />
+            <div class="sidebar-footer">
+              <div class="user-info mb-3"></div>
+              <a href="{% url 'logout' %}" class="btn btn-sm btn-danger w-100"><i class="bi bi-box-arrow-right me-1"></i> Logout</a>
+            </div>
+          </div>
+        </div>
+        <main class="col-lg-10 main-content">
+          <section id="home" class="dashboard-section active">
+            <div class="section-header mb-4">
+              <h1 class="section-title">Dashboard Overview</h1>
+              <p class="section-subtitle">{% if is_running %}Live status of your active monitoring session.{% else %}Welcome back! Start a session to see live data.{% endif %}</p>
+            </div>
+            {% if is_running %}
+            <div class="row g-4 mb-4">
+              <div class="col-12">
+                <div class="card">
+                  <div class="card-header bg-primary text-white"><h5 class="card-title mb-0"><i class="bi bi-broadcast me-2"></i>Active Monitoring Session</h5></div>
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col-md-6"><p class="mb-2"><strong>Session Mode:</strong> {{ active_session.timeframe }}</p><p class="mb-2"><strong>Started:</strong> {{ active_session.start_time|timesince }} ago</p></div>
+                      <div class="col-md-6"><p class="mb-1"><strong>Monitored Stocks:</strong></p><div class="d-flex flex-wrap gap-2">{% for stock in monitored_stocks %}<span class="badge bg-secondary">{{ stock.ticker }} ({{ stock.timeframe }})</span>{% endfor %}</div></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+            <div class="row g-4 mb-5">
+              <div class="col-md-6 col-xl-3"><div class="metric-card" id="bullish-card"><div class="metric-icon bg-success"><i class="bi bi-arrow-up-right-circle"></i></div><div class="metric-content"><h3 class="metric-value">{{ bullish_count|default:"-" }}/{{ monitored_stocks|length|default:"-" }}</h3><p class="metric-label">Bullish Trends</p><span class="metric-trend text-success"><i class="bi bi-arrow-up"></i> {{ bullish_percentage|default:"-" }}%</span></div></div></div>
+              <div class="col-md-6 col-xl-3"><div class="metric-card" id="bearish-card"><div class="metric-icon bg-danger"><i class="bi bi-arrow-down-right-circle"></i></div><div class="metric-content"><h3 class="metric-value">{{ bearish_count|default:"-" }}/{{ monitored_stocks|length|default:"-" }}</h3><p class="metric-label">Bearish Trends</p><span class="metric-trend text-danger"><i class="bi bi-arrow-down"></i> {{ bearish_percentage|default:"-" }}%</span></div></div></div>
+              <div class="col-md-6 col-xl-3"><div class="metric-card" id="neutral-card"><div class="metric-icon bg-warning"><i class="bi bi-pause-circle"></i></div><div class="metric-content"><h3 class="metric-value">{{ neutral_count|default:"-" }}/{{ monitored_stocks|length|default:"-" }}</h3><p class="metric-label">Neutral Trends</p><span class="metric-trend text-warning"><i class="bi bi-dash-circle"></i> {{ neutral_percentage|default:"-" }}%</span></div></div></div>
+              <div class="col-md-6 col-xl-3"><div class="metric-card" id="signals-card"><div class="metric-icon bg-info"><i class="bi bi-lightning-charge"></i></div><div class="metric-content"><h3 class="metric-value">{{ recent_signals|length|default:"0" }}</h3><p class="metric-label">Recent Signals</p><span class="metric-trend text-info"><i class="bi bi-eye"></i> In this session</span></div></div></div>
+            </div>
+            <div class="row g-4">
+              <div class="col-lg-8">
+                <div class="card chart-card">
+                  <div class="card-header"><h5 class="card-title">Current Stock Trends</h5></div>
+                  <div class="card-body">
+                    {% if is_running %}
+                    <!-- The .table-responsive div makes the table scroll horizontally on small screens -->
+                    <div class="table-responsive">
+                      <!-- Added .table-sm to make it more compact -->
+                      <table class="table table-hover table-sm">
+                        <thead>
+                          <tr>
+                            <th>Stock</th><th>Timeframe</th><th>Trend</th><th>Last Price</th><th>Last Update</th>
+                          </tr>
+                        </thead>
+                        <tbody id="stock-trends-tbody">
+                          {% for stock in monitored_stocks %}
+                          <tr>
+                            <td><strong>{{ stock.ticker }}</strong></td>
+                            <td><span class="badge bg-info-subtle text-info-emphasis">{{ stock.timeframe }}</span></td>
+                            <td>{{ stock.last_trend|default:"Waiting..." }}</td>
+                            <!-- CHANGED: Dollar ($) to Rupee (₹) symbol -->
+                            <td>₹{{ stock.last_price|default:"N/A" }}</td>
+                            <td class="text-muted">{{ stock.last_updated|timesince }} ago</td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                      <i class="bi bi-graph-up display-1 text-muted"></i>
+                      <p class="text-muted mt-3">No stocks are currently being monitored.</p>
+                      <a href="#stocks" class="btn btn-primary nav-link" data-section="stocks">Start Monitoring Stocks</a>
+                    </div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <div class="card">
+                  <div class="card-header"><h5 class="card-title">Recent Signals</h5></div>
+                  <div class="card-body">
+                    <div class="activity-list" id="signals-list">
+                      {% for signal in recent_signals %}
+                      <div class="activity-item">
+                        <div class="activity-icon {% if 'BULLISH' in signal.signal_type %}bg-success{% else %}bg-danger{% endif %}"><i class="bi {% if 'BULLISH' in signal.signal_type %}bi-arrow-up-circle{% else %}bi-arrow-down-circle{% endif %}"></i></div>
+                        <div class="activity-content"><strong>{{ signal.ticker }}</strong><small class="text-muted d-block">{{ signal.signal_type }}</small><span class="activity-time">{{ signal.timestamp|timesince }} ago</span></div>
+                      </div>
+                      {% empty %}
+                      <div class="activity-item">
+                        <div class="activity-icon bg-secondary"><i class="bi bi-info-circle"></i></div>
+                        <div class="activity-content"><strong>No recent signals</strong><small class="text-muted">New signals will appear here automatically.</small></div>
+                      </div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section id="stocks" class="dashboard-section">
+            <div class="section-header mb-4"><h1 class="section-title">Stock Analysis & Bot Control</h1><p class="section-subtitle">Configure and run the EMA Crossover monitoring bot from here.</p></div>
+            {% if message %}<div class="alert alert-success" role="alert">{{ message }}</div>{% endif %} {% if error %}<div class="alert alert-danger" role="alert">{{ error }}</div>{% endif %}
+            <div class="card">
+              <div class="card-header"><h5 class="card-title mb-0">Bot Status: {% if is_running %}<span class="badge bg-success">ACTIVE</span>{% else %}<span class="badge bg-danger">INACTIVE</span>{% endif %}</h5></div>
+              <div class="card-body">
+                {% if is_running %}
+                <p>The monitoring process is currently active. Check your terminal console for real-time logs and Telegram for alerts.</p>
+                <form method="post">{% csrf_token %}<button type="submit" name="action" value="stop" class="btn btn-danger"><i class="bi bi-stop-circle me-1"></i> Stop Monitoring</button></form>
+                {% else %}
+                <p>Add stock and timeframe pairs to the monitoring list, then click "Start Monitoring" to begin.</p>
+                <form method="post">
+                  {% csrf_token %}
+                  <div id="stock-timeframe-container" class="mb-3">
+                    <div class="row g-2 mb-2 stock-timeframe-row">
+                      <div class="col-sm-6">
+                        <label class="form-label visually-hidden">Select Stock:</label>
+                        <select name="tickers" required class="form-select stock-select">
+                          <option value="" disabled selected>Choose a stock...</option>
+                          {% for ticker in all_tickers %}<option value="{{ ticker }}">{{ ticker }}</option>{% endfor %}
+                        </select>
+                      </div>
+                      <div class="col-sm-4">
+                        <label class="form-label visually-hidden">Select Timeframe:</label>
+                        <select name="timeframes" required class="form-select">
+                          {% for tf in timeframes %}<option value="{{ tf }}">{{ tf }}</option>{% endfor %}
+                        </select>
+                      </div>
+                      <div class="col-sm-2 d-flex align-items-end"><button type="button" class="btn btn-outline-danger w-100 remove-stock-btn" style="display: none;"><i class="bi bi-trash"></i></button></div>
+                    </div>
+                  </div>
+                  <div class="d-flex gap-2"><button type="button" id="add-stock-btn" class="btn btn-secondary"><i class="bi bi-plus-circle me-1"></i> Add Stock</button><button type="submit" name="action" value="start" class="btn btn-success"><i class="bi bi-play-circle me-1"></i> Start Monitoring</button></div>
+                </form>
+                {% endif %}
+              </div>
+            </div>
+          </section>
+
+          <section id="signals" class="dashboard-section"></section>
+          <section id="prediction" class="dashboard-section">
+  <div class="section-header mb-4">
+    <h1 class="section-title">Future Prediction</h1>
+    <p class="section-subtitle">
+      Select a stock CSV to train the model and predict future prices.
+    </p>
+  </div>
+
+  <!-- SETUP CARD -->
+  <div class="card mb-4">
+    <div class="card-header">
+      <h5 class="card-title mb-0">
+        <i class="bi bi-cpu me-2"></i> Prediction Setup
+      </h5>
+    </div>
+
+    <div class="card-body">
+      <div class="row g-3 align-items-end">
+
+        <!-- STOCK DROPDOWN -->
+        <div class="col-md-6">
+          <label class="form-label">Select Stock (CSV)</label>
+          <select id="prediction-stock" class="form-select">
+            <option value="" disabled selected>Choose stock...</option>
+            {% for stock in prediction_stocks %}
+              <option value="{{ stock }}">{{ stock }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <!-- BUTTON -->
+        <div class="col-md-3">
+  <button id="predict-btn" class="btn btn-primary w-100">
+    <span class="predict-text">
+      <i class="bi bi-lightning-charge me-1"></i> Predict
+    </span>
+    <span class="predict-loader d-none">
+      <span class="spinner-border spinner-border-sm me-1"></span>
+      Predicting...
+    </span>
+  </button>
+</div>
+
+
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULT CARD -->
+  <div class="card mb-4 d-none" id="prediction-result">
+    <div class="card-header">
+      <h5 class="card-title mb-0">
+        <i class="bi bi-graph-up-arrow me-2"></i> Prediction Result
+      </h5>
+    </div>
+
+    <div class="card-body">
+      <div class="row text-center">
+        <div class="col-md-4">
+          <h6 class="text-muted">Trend</h6>
+          <h3 id="predicted-trend">--</h3>
+        </div>
+        <div class="col-md-4">
+          <h6 class="text-muted">Confidence</h6>
+          <h3 id="prediction-confidence">--%</h3>
+        </div>
+        <div class="col-md-4">
+          <h6 class="text-muted">Action</h6>
+          <h3 id="prediction-action">WAIT</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHART CARD -->
+  <div class="card d-none" id="prediction-chart-card">
+    <div class="card-header">
+      <h5 class="card-title mb-0">
+        <i class="bi bi-bar-chart-line me-2"></i> Price Prediction Chart
+      </h5>
+    </div>
+    <div class="card-body">
+      <canvas id="predictionChart" height="120"></canvas>
+    </div>
+  </div>
+</section>
+
+
+
+        </main>
+      </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/dashboard.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+$(document).ready(function () {
+  /* =====================================================
+     FULL PAGE LOADER FUNCTIONS - UPDATED
+  ===================================================== */
+ function showFullPageLoader() {
+  $('#fullPageLoader').removeClass('d-none');
+  $('body').css('overflow', 'hidden');
+}
+
+function hideFullPageLoader() {
+  $('#fullPageLoader').addClass('d-none');
+  $('body').css('overflow', 'auto');
+}
+
+
+  /* =====================================================
+     DASHBOARD LIVE UPDATE (EXISTING LOGIC)
+  ===================================================== */
+  const isRunning = {{ is_running|yesno:"true,false" }};
+
+  function fetchAndUpdateDashboard() {
+    $.ajax({
+      url: "{% url 'dashboard_data' %}",
+      type: "GET",
+      dataType: "json",
+      success: function (data) {
+
+        $('#bullish-card .metric-value').text(`${data.bullish_count}/${data.total_stocks}`);
+        $('#bullish-card .metric-trend').html(`<i class="bi bi-arrow-up"></i> ${data.bullish_percentage}%`);
+
+        $('#bearish-card .metric-value').text(`${data.bearish_count}/${data.total_stocks}`);
+        $('#bearish-card .metric-trend').html(`<i class="bi bi-arrow-down"></i> ${data.bearish_percentage}%`);
+
+        $('#neutral-card .metric-value').text(`${data.neutral_count}/${data.total_stocks}`);
+        $('#neutral-card .metric-trend').html(`<i class="bi bi-dash-circle"></i> ${data.neutral_percentage}%`);
+
+        $('#signals-card .metric-value').text(data.recent_signals_count);
+
+        const tbody = $('#stock-trends-tbody');
+        tbody.empty();
+
+        if (data.monitored_stocks) {
+          data.monitored_stocks.forEach(stock => {
+            tbody.append(`
+              <tr>
+                <td><strong>${stock.ticker}</strong></td>
+                <td><span class="badge bg-info-subtle text-info-emphasis">${stock.timeframe}</span></td>
+                <td>${stock.last_trend}</td>
+                <td>₹${stock.last_price}</td>
+                <td class="text-muted">${stock.last_updated}</td>
+              </tr>
+            `);
+          });
+        }
+      },
+      error: function (err) {
+        console.error("Dashboard update error:", err);
+      }
+    });
+  }
+
+  if (isRunning) {
+    fetchAndUpdateDashboard();
+    setInterval(fetchAndUpdateDashboard, 15000);
+  }
+
+  /* =====================================================
+     SELECT2 INIT (EXISTING LOGIC)
+  ===================================================== */
+  function initializeSelect2(el) {
+    el.select2({
+      theme: 'bootstrap-5',
+      width: '100%',
+      placeholder: 'Type to search...'
+    });
+  }
+
+  initializeSelect2($('.stock-select'));
+
+  $('#add-stock-btn').click(function () {
+    const newRow = $('.stock-timeframe-row:first').clone();
+    newRow.find('select').val('');
+    newRow.find('.select2-container').remove();
+    newRow.find('.remove-stock-btn').show();
+    $('#stock-timeframe-container').append(newRow);
+    initializeSelect2(newRow.find('.stock-select'));
+  });
+
+  $('#stock-timeframe-container').on('click', '.remove-stock-btn', function () {
+    $(this).closest('.stock-timeframe-row').remove();
+    if ($('.stock-timeframe-row').length === 1) {
+      $('.remove-stock-btn').hide();
+    }
+  });
+
+  /* =====================================================
+     🔥 FUTURE PREDICTION LOGIC (UPDATED)
+  ===================================================== */
+  let predictionChart = null;
+
+  $('#predict-btn').on('click', function () {
+    
+    const stock = $('#prediction-stock').val();
+    if (!stock) {
+      alert("Please select a stock");
+      return;
+    }
+    
+    // Disable the predict button
+    const predictBtn = $(this);
+    predictBtn.prop('disabled', true);
+    
+    // Show button loader
+    predictBtn.find('.predict-text').addClass('d-none');
+    predictBtn.find('.predict-loader').removeClass('d-none');
+    
+
+    // Hide old results
+    $('#prediction-result').addClass('d-none');
+    $('#prediction-chart-card').addClass('d-none');
+    
+
+
+    
+
+    
+    $.ajax({
+      url: "{% url 'predict_stock' %}",
+      type: "POST",
+      data: {
+        stock: stock,
+        csrfmiddlewaretoken: "{{ csrf_token }}"
+      },
+    
+      success: function (data) {
+ 
+        
+        setTimeout(() => {
+          // Hide the full page loader
+          hideFullPageLoader();
+          
+          // Enable the predict button
+          predictBtn.prop('disabled', false);
+          predictBtn.find('.predict-text').removeClass('d-none');
+          predictBtn.find('.predict-loader').addClass('d-none');
+          
+          // Show results
+          $('#predicted-trend').text(data.trend);
+          $('#prediction-confidence').text(data.confidence + '%');
+          $('#prediction-action').text(data.action);
+          
+          $('#prediction-result').removeClass('d-none');
+          $('#prediction-chart-card').removeClass('d-none');
+          
+          renderPredictionChart(data.chart_data);
+          
+          // Scroll to results if they're off-screen
+          $('html, body').animate({
+            scrollTop: $('#prediction-result').offset().top - 100
+          }, 500);
+          
+        }, 500); // Small delay for smooth transition
+      },
+      error: function (err) {
+        console.error("Prediction error:", err);
+        
+        // Hide loader first
+        hideFullPageLoader();
+        
+        // Enable the predict button
+        predictBtn.prop('disabled', false);
+        predictBtn.find('.predict-text').removeClass('d-none');
+        predictBtn.find('.predict-loader').addClass('d-none');
+        
+
+        
+
+        
+        // Show error alert
+        setTimeout(() => {
+          alert("Prediction failed. Please try again.");
+        }, 300);
+      }
+    });
+  });
+  
+  function renderPredictionChart(chartData) {
+    const ctx = document.getElementById('predictionChart').getContext('2d');
+    
+    if (predictionChart) {
+      predictionChart.destroy();
+    }
+    
+    predictionChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: chartData.historical_dates.concat(chartData.future_dates),
+        datasets: [
+          {
+            label: 'Historical Close',
+            data: chartData.historical_close,
+            borderColor: '#0d6efd',
+            borderWidth: 2,
+            fill: false
+          },
+          {
+            label: 'Future Prediction',
+            data: new Array(chartData.historical_close.length).fill(null)
+              .concat(chartData.future_predictions),
+            borderColor: '#dc3545',
+            borderWidth: 2,
+            borderDash: [6, 4],
+            fill: false
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        interaction: {
+          mode: 'index',
+          intersect: false
+        },
+        plugins: {
+          legend: {
+            position: 'top'
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: false
+          }
+        }
+      }
+    });
+  }
+});
+</script>
+
+
+  </body>
+</html>

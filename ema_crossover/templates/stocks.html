@@ -1,0 +1,200 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Stocks Analysis - EMA Crossover</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}"
+    />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/stocks.css' %}" />
+  </head>
+
+  <body>
+    <!-- Top Navbar -->
+    <nav
+      class="navbar navbar-light bg-white border-bottom shadow-sm d-lg-none fixed-top"
+    >
+      <div class="container-fluid">
+        <button class="btn btn-outline-primary sidebar-toggle" type="button">
+          <i class="bi bi-list fs-3"></i>
+        </button>
+        <span class="navbar-brand fw-bold">EMA Crossover</span>
+      </div>
+    </nav>
+
+    <div class="container-fluid">
+      <div class="row">
+        <!-- Sidebar -->
+        <div
+          class="col-lg-2 d-lg-block bg-light border-end sidebar"
+          id="sidebar"
+        >
+          <div class="sidebar-content d-flex flex-column p-3">
+            <!-- Logo -->
+            <div class="sidebar-header">
+              <a
+                href="{% url 'home' %}"
+                class="d-flex align-items-center mb-4 text-decoration-none"
+              >
+                <img
+                  src="{% static 'img/favicon.webp' %}"
+                  alt="Logo"
+                  class="sidebar-logo me-2"
+                />
+                <span class="sidebar-brand">EMA Crossover</span>
+              </a>
+            </div>
+
+            <hr class="sidebar-divider" />
+
+            <!-- Navigation -->
+            <ul class="nav nav-pills flex-column mb-auto sidebar-nav">
+              <li class="nav-item">
+                <a href="{% url 'home' %}" class="nav-link">
+                  <i class="bi bi-house me-2"></i>
+                  <span class="nav-text">Dashboard</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a
+                  href="{% url 'stocks' %}"
+                  class="nav-link active"
+                  data-section="stocks"
+                >
+                  <i class="bi bi-bar-chart-line me-2"></i>
+                  <span class="nav-text">Stocks Analysis</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#signals" class="nav-link">
+                  <i class="bi bi-graph-up-arrow me-2"></i>
+                  <span class="nav-text">Trading Signals</span>
+                </a>
+              </li>
+            </ul>
+
+            <hr class="sidebar-divider" />
+
+            <!-- User Section -->
+            <div class="sidebar-footer">
+              <div class="user-info mb-3">
+                <!-- User info placeholder -->
+              </div>
+              <a href="{% url 'logout' %}" class="btn btn-sm btn-danger w-100">
+                <i class="bi bi-box-arrow-right me-1"></i> Logout
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="col-lg-10 main-content">
+          <!-- Stocks Analysis Section -->
+          <section id="stocks" class="dashboard-section active">
+            <div class="section-header mb-4">
+              <h1 class="section-title">Stocks Analysis</h1>
+              <p class="section-subtitle">
+                Analyze stock performance with EMA crossover signals
+              </p>
+            </div>
+
+            <!-- Search and Filter Section -->
+            <div class="row mb-4">
+              <div class="col-md-6">
+                <div class="search-box">
+                  <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0">
+                      <i class="bi bi-search"></i>
+                    </span>
+                    <input
+                      type="text"
+                      class="form-control border-start-0"
+                      placeholder="Search stocks (e.g., AAPL, TSLA)..."
+                      id="stockSearch"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <select class="form-select" id="sectorFilter">
+                  <option value="">All Sectors</option>
+                  <option value="technology">Technology</option>
+                  <option value="healthcare">Healthcare</option>
+                  <option value="finance">Finance</option>
+                  <option value="energy">Energy</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <select class="form-select" id="signalFilter">
+                  <option value="">All Signals</option>
+                  <option value="bullish">Bullish</option>
+                  <option value="bearish">Bearish</option>
+                  <option value="neutral">Neutral</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Stocks Grid -->
+            <div class="row g-4" id="stocksGrid">
+              <!-- Stock cards will be dynamically loaded here -->
+            </div>
+
+            <!-- Loading Spinner -->
+            <div id="loadingSpinner" class="text-center py-5">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading stocks...</span>
+              </div>
+              <p class="mt-2 text-muted">Loading stocks data...</p>
+            </div>
+
+            <!-- Chart Modal -->
+            <div class="modal fade" id="chartModal" tabindex="-1">
+              <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="chartModalTitle">
+                      Stock Analysis
+                    </h5>
+                    <button
+                      type="button"
+                      class="btn-close"
+                      data-bs-dismiss="modal"
+                    ></button>
+                  </div>
+                  <div class="modal-body">
+                    <div id="chartContainer" style="height: 500px">
+                      <p class="text-center text-muted py-5">
+                        Chart will be loaded here...
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom JS -->
+    <script src="{% static 'js/dashboard.js' %}"></script>
+    <script src="{% static 'js/stocks.js' %}"></script>
+  </body>
+</html>
