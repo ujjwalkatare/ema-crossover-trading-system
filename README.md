@@ -1,4 +1,4 @@
-![ChatGPT Image Jan 29, 2026, 11_00_33 AM](https://github.com/user-attachments/assets/616f96bb-7079-49dd-a661-e796e55cf684)📈 Real-Time EMA Crossover Stock Monitoring & Prediction System
+📈 Real-Time EMA Crossover Stock Monitoring & Prediction System
 A full-stack Django-based real-time stock analysis system that monitors live market data, detects EMA crossovers, provides live dashboard analytics, and predicts future stock trends using machine learning.
 This project is designed to demonstrate real-time system design, background processing, secure authentication, and data-driven decision support, making it suitable for academic projects, portfolios, and interviews.
 
@@ -41,7 +41,7 @@ Stock symbols loaded dynamically from CSV
 Historical OHLC data used for ML training
 
 🧩 How the System Works
-
+![ChatGPT Image Jan 29, 2026, 11_00_33 AM](https://github.com/user-attachments/assets/616f96bb-7079-49dd-a661-e796e55cf684)
 User logs in using OTP-based authentication
 User selects stocks and assigns timeframes
 A monitoring session is created
